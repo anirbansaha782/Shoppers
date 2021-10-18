@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
+const flash=require('connect-flash');
 
 const errorController = require('./controllers/error');
 const User = require('./models/user');
@@ -38,6 +39,8 @@ app.use(
   })
 );
 
+app.use(flash());
+
 app.use((req, res, next) => {
   if(!req.session.user)
   return next();
@@ -56,7 +59,7 @@ app.use(authRoutes);
 app.use(errorController.get404);
 
 mongoose
-  .connect(MONGODB_URI)
+  .connect(MONGODB_URI, { useNewUrlParser: true ,useUnifiedTopology: true})
   .then(result => {
     console.log("Connected");
     // User.findOne().then(user => {
