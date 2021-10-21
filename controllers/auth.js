@@ -1,5 +1,16 @@
 const User = require('../models/user');
-const bcrypt=require('bcryptjs')
+const bcrypt=require('bcryptjs');
+const nodemailer=require('nodemailer')
+const sendGridTransport=require('nodemailer-sendgrid-transport')
+const {validationResult}=require('express-validator')
+
+const transporter=nodemailer.createTransport(sendGridTransport({
+  auth:{
+    api_key:'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'
+  }
+}));
+
+
 
 exports.getLogin = (req, res, next) => {
   let message=req.flash('error');
@@ -61,13 +72,22 @@ exports.postSignup = (req, res, next) => {
   const email=req.body.email;
   const password=req.body.password;
   const confirmPassword=req.body.password;
-  User.findOne({email:email})
-  .then(userDoc=>{
-    if(userDoc){
-    req.flash('error','Email already exist');
-    return res.redirect('/signup');
-    }
-    return bcrypt.hash(password,12)
+  const error=validationResult(req);
+  if(!error.isEmpty()){
+    return res.status(422).render('auth/signup', {
+      path: '/signup',
+      pageTitle: 'Signup',
+      isAuthenticated: false,
+      errorMessage:error.array()[0].msg
+    });
+  }
+  // User.findOne({email:email})
+  // .then(userDoc=>{
+  //   if(userDoc){
+  //   req.flash('error','Email already exist');
+  //   return res.redirect('/signup');
+  //   }
+     bcrypt.hash(password,12)
     .then(hashedPassword=>{
       console.log(hashedPassword);
       const user=new User({
@@ -77,13 +97,22 @@ exports.postSignup = (req, res, next) => {
       })
       return user.save()
     })
-    .then(result=>{
+    .then(()=>{
       res.redirect('/login');
+      return transporter.sendMail({
+        to:email,
+        from: 'anirbansaha782@gmail.com',
+        subject:'SignUp Success',
+        html:'<h1>Signup done successfully</h1>'
+      })
     })
-  })
-  .catch(err=>{
-    console.log(err);
-  })
+    .catch(err=>{
+      console.log(err);
+    })
+ // })
+  // .catch(err=>{
+  //   console.log(err);
+  // })
 };
 
 exports.postLogout = (req, res, next) => {
