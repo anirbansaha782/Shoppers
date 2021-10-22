@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const mongoose=require('mongoose');
 
 exports.getAddProduct = (req, res, next) => {
   res.render('admin/edit-product', {
@@ -15,6 +16,7 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
   const product = new Product({
+    _id:new mongoose.Types.ObjectId('616bd383cfcd84152cd860ac'),
     title: title,
     price: price,
     description: description,
@@ -29,7 +31,11 @@ exports.postAddProduct = (req, res, next) => {
       res.redirect('/admin/products');
     })
     .catch(err => {
-      console.log(err);
+      //res.redirect('/500');
+      //console.log(err);
+      const error=new Error(err);
+      error.httpStatusCode=500;
+      return next(error);
     });
 };
 
