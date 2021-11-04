@@ -1,22 +1,65 @@
 const Product = require('../models/product');
 const mongoose=require('mongoose');
+const {validationResult}=require('express-validator');
+const fileHelper=require('../util/file')
 
 exports.getAddProduct = (req, res, next) => {
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
     editing: false,
-    isAuthenticated: req.session.isLoggedIn
+    isAuthenticated: req.session.isLoggedIn,
+    errorMessage: null,
   });
 };
 
 exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
-  const imageUrl = req.body.imageUrl;
+  const image = req.file;
   const price = req.body.price;
   const description = req.body.description;
+  console.log(image);
+
+  if (!image) {
+    return res.status(422).render('admin/edit-product', {
+      pageTitle: 'Add Product',
+      path: '/admin/add-product',
+      editing: false,
+      hasError: true,
+      product: {
+        title: title,
+        price: price,
+        description: description
+      },
+      isAuthenticated: req.session.isLoggedIn,
+      errorMessage: 'Attached file is not an image.',
+      validationErrors: []
+    });
+  }
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    console.log(errors.array());
+    return res.status(422).render('admin/edit-product', {
+      pageTitle: 'Add Product',
+      path: '/admin/add-product',
+      editing: false,
+      hasError: true,
+      product: {
+        title: title,
+        imageUrl: imageUrl,
+        price: price,
+        description: description
+      },
+      isAuthenticated: req.session.isLoggedIn,
+      errorMessage: errors.array()[0].msg,
+      validationErrors: errors.array()
+    });
+  }
+
+  const imageUrl=image.path;
+
   const product = new Product({
-    _id:new mongoose.Types.ObjectId('616bd383cfcd84152cd860ac'),
     title: title,
     price: price,
     description: description,
@@ -55,7 +98,8 @@ exports.getEditProduct = (req, res, next) => {
         path: '/admin/edit-product',
         editing: editMode,
         product: product,
-        isAuthenticated: req.session.isLoggedIn
+        isAuthenticated: req.session.isLoggedIn,
+        errorMessage: null,
       });
     })
     .catch(err => console.log(err));
@@ -65,15 +109,35 @@ exports.postEditProduct = (req, res, next) => {
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
   const updatedPrice = req.body.price;
-  const updatedImageUrl = req.body.imageUrl;
+  const image = req.file;
   const updatedDesc = req.body.description;
+
+  // if (!image) {
+  //   return res.status(422).render('admin/edit-product', {
+  //     pageTitle: 'Add Product',
+  //     path: '/admin/add-product',
+  //     editing: false,
+  //     hasError: true,
+  //     isAuthenticated: req.session.isLoggedIn,
+  //     product: {
+  //       title: updatedTitle,
+  //       price: updatedPrice,
+  //       description: updatedDesc
+  //     },
+  //     errorMessage: 'Attached file is not an image.',
+  //     validationErrors: []
+  //   });
+  // }
 
   Product.findById(prodId)
     .then(product => {
       product.title = updatedTitle;
       product.price = updatedPrice;
       product.description = updatedDesc;
-      product.imageUrl = updatedImageUrl;
+      if(image){
+        fileHelper.deleteFile(product.imageUrl)
+        product.imageUrl = image.path;
+      }
       return product.save();
     })
     .then(result => {
@@ -101,10 +165,16 @@ exports.getProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.findByIdAndRemove(prodId)
-    .then(() => {
+  Product.findById(prodId)
+  .then(product=>{
+    if(!product)
+    return next(new Error('Product Not found'));
+    fileHelper.deleteFile(product.imageUrl);
+    return Product.findByIdAndRemove(prodId);
+  })
+  .then(() => {
       console.log('DESTROYED PRODUCT');
       res.redirect('/admin/products');
     })
-    .catch(err => console.log(err));
+  .catch(err => console.log(err));
 };

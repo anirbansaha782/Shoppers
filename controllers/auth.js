@@ -138,7 +138,7 @@ exports.postLogin = (req, res, next) => {
             path: '/login',
             pageTitle: 'Login',
             errorMessage: 'Invalid email or password.',
-            isAuthenticated:true,
+            isAuthenticated:req.session.isLoggedIn,
             oldInput: {
               email: email,
               password: password
