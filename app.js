@@ -11,8 +11,9 @@ const multer=require('multer');
 const errorController = require('./controllers/error');
 const User = require('./models/user');
 
-const MONGODB_URI =
-  'mongodb+srv://Anirban:Anirban@cluster0.iorwe.mongodb.net/myFirstDatabase';
+
+require('dotenv').config()
+const MONGODB_URI =process.env.MONGODB_URI;
 
 const app = express();
 const store = new MongoDBStore({
