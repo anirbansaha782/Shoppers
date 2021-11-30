@@ -50,5 +50,5 @@ This project uses the following npm libraries:
 * [morgan](https://www.npmjs.com/package/morgan) : Optional. Used fir logging data.
 * [multer](https://www.npmjs.com/package/multer) : Used for parsing file data sent over network and storing it on server.
 * [pdfkit](https://www.npmjs.com/package/pdfkit) : Used for generating pdf on the fly for invoicing.
-* [socket.io](https://www.npmjs.com/package/socket.io) : Used for implementing the P2P messaging logic and sending data from server to client in real time.
-* [stripe](https://www.npmjs.com/package/stripe) : Used for integrating payment gateway with Sellout.
+<!-- * [socket.io](https://www.npmjs.com/package/socket.io) : Used for implementing the P2P messaging logic and sending data from server to client in real time. -->
+<!-- * [stripe](https://www.npmjs.com/package/stripe) : Used for integrating payment gateway with Sellout. -->
