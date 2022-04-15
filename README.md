@@ -28,7 +28,7 @@ Features:
 The application should be running at [heroku](https://sellout-products.herokuapp.com/).
 --->
 
-
+[Website Link](https://shoppers-alpha.herokuapp.com/)
 
 
 <br>
@@ -54,4 +54,4 @@ This project uses the following npm libraries:
 <!-- * [stripe](https://www.npmjs.com/package/stripe) : Used for integrating payment gateway with Sellout. -->
 
 
-[Link of my project](https://shoppers-alpha.herokuapp.com/)
+
