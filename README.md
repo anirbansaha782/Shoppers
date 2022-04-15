@@ -52,3 +52,6 @@ This project uses the following npm libraries:
 * [pdfkit](https://www.npmjs.com/package/pdfkit) : Used for generating pdf on the fly for invoicing.
 <!-- * [socket.io](https://www.npmjs.com/package/socket.io) : Used for implementing the P2P messaging logic and sending data from server to client in real time. -->
 <!-- * [stripe](https://www.npmjs.com/package/stripe) : Used for integrating payment gateway with Sellout. -->
+
+
+[Link of my project](https://shoppers-alpha.herokuapp.com/)
