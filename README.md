@@ -8,16 +8,14 @@ A web based application running on Nodejs runtime which allows sellers to list t
 <br><br>
 Features:
 <br>
+* Application developed using MVC design.
 * User can list their products for selling.
 * Users can browse the listing without login.
-* An user can sell their products only after email validation.
 * Data rentention even after unsuccessfully data validation 
 * Invoice generated as PDF on the fly.
 * Data stored MongoDB.
-* Application developed using MVC design.
-* Protected against CSRF attacks.
 * Designed in a single Nodsjs application using EJS rendering.
-* Added pagination feature to show onl limyted products at once
+* Added pagination feature to show onl limited products at once
 <br><br>
 
 <h1>MVC Workflow</h1>
